@@ -22,14 +22,18 @@
 
 package com.microsoft.graph.extensions;
 
+import static com.microsoft.graph.extensions.AuthorizationHeaderOmittingHeaderOptionList.isAuthorizationHeaderName;
+
+import java.util.List;
+
 import com.microsoft.graph.concurrency.ChunkedUploadResponseHandler;
 import com.microsoft.graph.core.ClientException;
 import com.microsoft.graph.core.GraphErrorCodes;
+import com.microsoft.graph.core.IBaseClient;
 import com.microsoft.graph.http.BaseRequest;
 import com.microsoft.graph.http.HttpMethod;
+import com.microsoft.graph.options.HeaderOption;
 import com.microsoft.graph.options.Option;
-
-import java.util.List;
 
 /**
  * The chunk upload request.
@@ -95,8 +99,7 @@ public class ChunkedUploadRequest {
         System.arraycopy(chunk, 0, this.mData, 0, chunkSize);
         this.mRetryCount = 0;
         this.mMaxRetry = maxRetry;
-        this.mBaseRequest = new BaseRequest(requestUrl, client, options, ChunkedUploadResult.class) {
-        };
+        this.mBaseRequest = new AuthorizationHeaderOmittingRequest(requestUrl, client, options, ChunkedUploadResult.class);
         this.mBaseRequest.setHttpMethod(HttpMethod.PUT);
         this.mBaseRequest.addHeader(CONTENT_RANGE_HEADER_NAME,
                 String.format(
@@ -144,4 +147,35 @@ public class ChunkedUploadRequest {
                 new ClientException("Upload session failed to many times.", null,
                         GraphErrorCodes.UploadSessionIncomplete));
     }
+
+    /**
+     * An http request never including an authorization header, even if added through {@link #addHeader(String, String)}.
+     */
+    private static class AuthorizationHeaderOmittingRequest extends BaseRequest {
+
+        public AuthorizationHeaderOmittingRequest(String requestUrl, IBaseClient client, List<Option> options, Class responseClass) {
+            super(requestUrl, client, options, responseClass);
+        }
+
+        /**
+         * <p>Adds a header to this request.
+         * <p>Invoking this method with a header name <i>Authorization</i> has no effect.
+         *
+         * @param header The name of the header.
+         * @param value  The value of the header.
+         */
+        @Override
+        public void addHeader(String header, String value) {
+            if (isAuthorizationHeaderName(header)) {
+                return;
+            }
+            super.addHeader(header, value);
+        }
+
+        @Override
+        public List<HeaderOption> getHeaders() {
+            return new AuthorizationHeaderOmittingHeaderOptionList(super.getHeaders());
+        }
+    }
+
 }

@@ -79,4 +79,25 @@ public class BaseDriveItemStreamRequest extends BaseStreamRequest<DriveItem> imp
     public DriveItem put(final byte[] fileContents) throws ClientException {
         return send(fileContents);
     }
+
+    /**
+     * Uploads to the stream
+     *
+     * @param fileStream The stream to upload.
+     * @param callback     The callback to be called after success or failure.
+     */
+    public void put(InputStream fileStream, ICallback<DriveItem> callback) {
+        send(fileStream, callback);
+    }
+
+    /**
+     * Uploads to the stream
+     *
+     * @param fileStream The stream to upload.
+     * @return The result of the upload.
+     * @throws ClientException An exception occurs if there was an error while the request was sent.
+     */
+    public DriveItem put(InputStream fileStream) throws ClientException {
+        return send(fileStream);
+    }
 }

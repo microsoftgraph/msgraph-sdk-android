@@ -55,4 +55,21 @@ public interface IBaseDriveItemStreamRequest extends IHttpStreamRequest {
      * @throws ClientException An exception occurs if there was an error while the request was sent.
      */
     DriveItem put(final byte[] fileContents) throws ClientException;
+
+    /**
+     * Uploads to the stream
+     *
+     * @param fileStream The stream to upload.
+     * @param callback     The callback to be called after success or failure.
+     */
+    void put(final InputStream fileStream, final ICallback<DriveItem> callback);
+
+    /**
+     * Uploads to the stream
+     *
+     * @param fileStream The stream to upload.
+     * @return The result of the upload.
+     * @throws ClientException An exception occurs if there was an error while the request was sent.
+     */
+    DriveItem put(final InputStream fileStream) throws ClientException;
 }

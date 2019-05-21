@@ -22,9 +22,6 @@
 
 package com.microsoft.graph.concurrency;
 
-
-import com.microsoft.graph.concurrency.ChunkedUploadResponseHandler;
-import com.microsoft.graph.concurrency.IProgressCallback;
 import com.microsoft.graph.extensions.ChunkedUploadRequest;
 import com.microsoft.graph.extensions.ChunkedUploadResult;
 import com.microsoft.graph.extensions.IGraphServiceClient;
@@ -82,7 +79,7 @@ public class ChunkedUploadProvider<UploadType> {
     /**
      * The stream size.
      */
-    private final int mStreamSize;
+    private final Long mStreamSize;
 
     /**
      * The upload response handler.
@@ -92,7 +89,7 @@ public class ChunkedUploadProvider<UploadType> {
     /**
      * The counter for how many bytes read from input stream.
      */
-    private int mReadSoFar;
+    private Long mReadSoFar;
 
     /**
      * Create the ChunkedUploadProvider
@@ -106,7 +103,7 @@ public class ChunkedUploadProvider<UploadType> {
     public ChunkedUploadProvider(final UploadSession uploadSession,
                                  final IGraphServiceClient client,
                                  final InputStream inputStream,
-                                 final int streamSize,
+                                 final Long streamSize,
                                  final Class<UploadType> uploadTypeClass) {
         if (uploadSession == null) {
             throw new InvalidParameterException("Upload session is null.");
@@ -125,7 +122,7 @@ public class ChunkedUploadProvider<UploadType> {
         }
 
         this.mClient = client;
-        this.mReadSoFar = 0;
+        this.mReadSoFar = 0L;
         this.mInputStream = inputStream;
         this.mStreamSize = streamSize;
         this.mUploadUrl = uploadSession.uploadUrl;

@@ -71,8 +71,8 @@ public class ChunkedUploadRequest {
                                 final byte[] chunk,
                                 final int chunkSize,
                                 final int maxRetry,
-                                final int beginIndex,
-                                final int totalLength) {
+                                final Long beginIndex,
+                                final Long totalLength) {
         this.mData = new byte[chunkSize];
         System.arraycopy(chunk, 0, this.mData, 0, chunkSize);
         this.mRetryCount = 0;
